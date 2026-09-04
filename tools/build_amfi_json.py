@@ -23,7 +23,7 @@ def main() -> int:
     snap = build_snapshot()
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(snap, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    print(f"wrote {out} — {snap['meta']['schemes']} schemes, generated {snap['meta']['generated_at']}")
+    print(f"wrote {out} — {snap['meta']['schemes']} schemes, NAVs as of {snap['meta']['nav_as_of']}")
     return 0
 
 

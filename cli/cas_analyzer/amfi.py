@@ -109,10 +109,13 @@ def build_snapshot(text: str | None = None) -> dict:
     if text is None:
         text = fetch_navall()
     by_isin = parse_navall(text)
+    # Deterministic for identical data (no build timestamp), so the daily
+    # refresh workflow only commits when NAVs actually changed.
+    nav_as_of = max((r["date"] for r in by_isin.values() if r.get("date")), default="")
     return {
         "meta": {
             "source": "AMFI NAVAll.txt (amfiindia.com)",
-            "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "nav_as_of": nav_as_of,
             "schemes": len(by_isin),
         },
         "byIsin": by_isin,

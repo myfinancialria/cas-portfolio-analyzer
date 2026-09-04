@@ -95,7 +95,7 @@ const UI = (() => {
 
   function render(analysis, container) {
     const t = analysis.totals;
-    const asOf = analysis.amfiMeta ? analysis.amfiMeta.generated_at.slice(0, 10) : "";
+    const asOf = analysis.amfiMeta ? analysis.amfiMeta.nav_as_of || "" : "";
     const period = analysis.statementPeriod && analysis.statementPeriod.from
       ? `${analysis.statementPeriod.from} → ${analysis.statementPeriod.to}` : null;
 
@@ -103,7 +103,7 @@ const UI = (() => {
       <div class="cards">
         <div class="card"><div class="card-label">Invested</div><div class="card-value">${inr(t.invested)}</div></div>
         <div class="card"><div class="card-label">Current value</div><div class="card-value">${inr(t.currentValue)}</div>
-          <div class="card-sub">NAVs as of AMFI snapshot ${esc(asOf)}</div></div>
+          <div class="card-sub">AMFI NAVs as of ${esc(asOf)}</div></div>
         <div class="card"><div class="card-label">Unrealized gain</div>
           <div class="card-value">${signed(t.gain, inr)}</div>
           <div class="card-sub">${t.gainPct == null ? "" : signed(t.gainPct, pct) + " absolute"}</div></div>

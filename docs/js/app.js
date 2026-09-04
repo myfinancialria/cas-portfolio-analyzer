@@ -106,7 +106,7 @@
     Enrich.loadAmfi()
       .then((a) => {
         const m = a.meta || {};
-        $("amfi-note").textContent = `AMFI NAV snapshot: ${m.schemes || "?"} schemes, refreshed ${String(m.generated_at || "").slice(0, 10)} (auto-updated daily).`;
+        $("amfi-note").textContent = `AMFI NAV snapshot: ${m.schemes || "?"} schemes, NAVs as of ${m.nav_as_of || "?"} (auto-updated daily).`;
       })
       .catch(() => {
         $("amfi-note").textContent = "AMFI NAV snapshot could not be loaded — values will fall back to the NAVs printed in your CAS.";
