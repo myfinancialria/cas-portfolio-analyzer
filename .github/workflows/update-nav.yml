@@ -1,0 +1,32 @@
+name: Refresh AMFI NAV snapshot
+
+on:
+  schedule:
+    # 17:30 UTC = 23:00 IST — after AMFI publishes the day's NAVs
+    - cron: "30 17 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Rebuild docs/data/amfi.json from AMFI NAVAll.txt
+        run: python tools/build_amfi_json.py docs/data/amfi.json
+      - name: Commit if changed
+        run: |
+          if git diff --quiet docs/data/amfi.json; then
+            echo "No NAV changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/amfi.json
+          git commit -m "data: refresh AMFI NAV snapshot"
+          git push

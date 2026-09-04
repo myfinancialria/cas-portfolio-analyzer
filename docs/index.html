@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CAS Portfolio Analyzer — Indian Mutual Fund CAS, analyzed in your browser</title>
+  <meta name="description" content="Upload your CAMS/KFintech Consolidated Account Statement (CAS) PDF and get category-wise bifurcation, latest NAVs, gains, XIRR, CAGR and research links — parsed entirely in your browser. Nothing is uploaded." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+  <script src="js/parser.js" defer></script>
+  <script src="js/enrich.js" defer></script>
+  <script src="js/ui.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1>📊 CAS Portfolio Analyzer</h1>
+    <p class="tagline">Drop your mutual-fund <strong>Consolidated Account Statement (CAS)</strong> PDF — get category-wise
+      bifurcation, latest NAVs, gain/loss, XIRR &amp; CAGR, and one-click research links for every fund.</p>
+    <p class="privacy">🔒 <strong>Private by design:</strong> the PDF is parsed <em>inside your browser</em> and never uploaded
+      anywhere. The only network calls are anonymous scheme-code lookups to public NAV data (AMFI snapshot + api.mfapi.in).</p>
+  </header>
+
+  <main>
+    <section class="panel no-print">
+      <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Choose or drop your CAS PDF">
+        <div class="dz-icon">📄</div>
+        <div class="dz-title">Drop your CAS PDF here, or click to choose</div>
+        <div class="dz-sub">CAMS / KFintech detailed or summary CAS · also accepts <code>casparser</code> JSON</div>
+      </div>
+      <input type="file" id="file-input" accept=".pdf,.json,application/pdf,application/json" hidden />
+      <div class="input-row">
+        <label for="password">PDF password (if protected — usually your PAN or the password you set):</label>
+        <input type="password" id="password" autocomplete="off" placeholder="Leave blank if not protected" />
+        <button id="btn-sample" class="btn primary">Try with sample data</button>
+      </div>
+      <p id="amfi-note" class="muted small"></p>
+      <div id="status" class="status" hidden></div>
+
+      <details class="help">
+        <summary>Where do I get my CAS? · What's supported?</summary>
+        <ul>
+          <li><strong>Get your CAS:</strong> <a href="https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement" target="_blank" rel="noopener noreferrer">CAMS → Statements → CAS</a>
+            or <a href="https://mfs.kfintech.com/investor/General/ConsolidatedAccountStatement" target="_blank" rel="noopener noreferrer">KFintech → CAS</a>.
+            Choose the <strong>Detailed</strong> statement, <strong>since the first investment date</strong> (e.g. from 01-Jan-1990) —
+            that unlocks XIRR and the LTCG/STCG estimate.</li>
+          <li><strong>Supported:</strong> CAMS/KFintech mail-back CAS, detailed or summary. <strong>Not yet:</strong> NSDL/CDSL
+            depository e-CAS (different layout). For odd variants, convert with
+            <a href="https://github.com/codereverser/casparser" target="_blank" rel="noopener noreferrer">casparser</a>
+            (<code>casparser yourfile.pdf -o out.json</code>) and drop the JSON here — same analysis, guaranteed parse.</li>
+          <li><strong>Parser didn't work?</strong> <button id="btn-debug" class="btn-link" type="button">Show extracted text</button>
+            and open a GitHub issue with the (redacted) layout.</li>
+        </ul>
+      </details>
+      <div id="debug-wrap" hidden>
+        <p class="muted small">Raw text extracted from your PDF (stays on this page — redact before sharing):</p>
+        <textarea id="debug-text" rows="12" spellcheck="false"></textarea>
+      </div>
+    </section>
+
+    <div id="results"></div>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>Data sources:</strong> scheme categories &amp; latest NAVs from
+      <a href="https://www.amfiindia.com/net-asset-value/nav-history" target="_blank" rel="noopener noreferrer">AMFI</a>
+      (snapshot auto-refreshed daily via GitHub Actions); NAV history for CAGR from
+      <a href="https://www.mfapi.in/" target="_blank" rel="noopener noreferrer">api.mfapi.in</a>.
+      Research links point to ValueResearch, RupeeVest, Tickertape, Morningstar India and Moneycontrol —
+      none of which provide public APIs, so this tool links you to them rather than scraping.</p>
+    <p class="disclaimer"><strong>Disclaimer:</strong> This tool is for information and education only. It is <em>not</em>
+      SEBI-registered investment advice, and not tax advice; computed returns, categories and tax estimates can be wrong or
+      stale. Past performance does not predict future results. Consult a SEBI-registered Investment Adviser and a qualified
+      CA before acting. Under the Income-tax Act, 1961, rates change — verify current rules.</p>
+    <p><a href="https://github.com/myfinancialria/cas-portfolio-analyzer" target="_blank" rel="noopener noreferrer">Source on GitHub</a>
+      · MIT License · Built with a Python CLI twin — see the repo README.</p>
+  </footer>
+</body>
+</html>
